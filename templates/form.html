@@ -1,0 +1,44 @@
+<html>
+
+<head>
+    <title>Form!!!</title>
+</head>
+
+<body>
+    <h1> Place for form</h1>
+
+    <form method="POST" action="{{ url_for('form') }}">
+        {{ form.csrf_token }} {{ form.card_holder.label }} {{ form.card_holder }}
+        <ul>
+            {% for error in form.card_holder.errors %}
+            <li style="color:red;">{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {{ form.card_number.label }} {{ form.card_number }}
+        <ul>
+            {% for error in form.card_number.errors %}
+            <li style="color:red;">{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {{ form.expiration_date.label }} {{ form.expiration_date }}
+        <ul>
+            {% for error in form.expiration_date.errors %}
+            <li style="color:red;">{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {{ form.security_code.label }} {{ form.security_code}} {% for error in form.security_code.errors %}
+        <ul>
+            <li style="color:red;">{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {{ form.amount.label }} {{ form.amount }}
+        <ul>
+            {% for error in form.amount.errors %}
+            <li style="color:red;">{{ error }}</li>
+            {% endfor %}
+        </ul>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+
+</html>
