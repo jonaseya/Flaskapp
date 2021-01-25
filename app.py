@@ -1,14 +1,16 @@
 
 from re import error
+import re
 from flask import Flask,render_template,url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from werkzeug.utils import redirect
+from werkzeug.utils import redirect, validate_arguments
 from flask_wtf import FlaskForm
 from wtforms import StringField,PasswordField, form
 from wtforms.fields.core import DateField, DateTimeField, DecimalField, IntegerField
 from wtforms.validators import DataRequired, InputRequired, Length, AnyOf, ValidationError
 from wtforms.fields.html5 import DateTimeLocalField
+
 
 
 app = Flask(__name__)
@@ -27,6 +29,9 @@ def length(min=-1, max=-1):
             raise ValidationError(message)
 
     return _length
+
+
+
 class PaymentForm(FlaskForm): 
     card_holder = StringField('card_holder', validators=[InputRequired(), length(max= 50)]) 
     card_number = IntegerField('card_number', validators=[InputRequired('Credit Card number is required!'),length(min=13, max=16)]) 
@@ -34,7 +39,12 @@ class PaymentForm(FlaskForm):
     security_code = StringField('security_code', validators=[InputRequired('Credit Card number is required!'),length(min=1, max=3)])
     amount = DecimalField('amount', validators=[InputRequired(),length(min=1)])
 
+
+class ConformationForm(FlaskForm):
+    pass
+    
 class Todo(db.Model):
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     card_holder = db.Column(db.String, default=0)
     card_number = db.Column(db.Integer, default = 0)
@@ -48,9 +58,6 @@ class Todo(db.Model):
 
 
 
-# @app.route('/', methods=['GET','POST'])
-# def index():
-#     return render_template ('form.html')
 
 
 
@@ -74,13 +81,32 @@ def form():
         db.session.add(new_task)
         db.session.commit() # save to db
         if float(amount) < 20:
-                return "CheapPaymentGateway"
+                return cheap_payment_gateway()
         elif 20 < float(amount)<  500:
-                return "ExpensivePaymentGateway"
+                return expensive_payment_gateway()
         elif float(amount) > 500:
-                return "PremiumPaymentGateway"    
+                return premium_payment_gateway()    
     
     return render_template('form.html', form = form)
+    
+@app.route('/paynow', methods=['GET','POST'])
+def cheap_payment_gateway():
+    if request.method == 'GET':
+         return "Your payment Has been processed through CheapPaymentGateway"
+    return render_template ('paynow.html' )
+
+
+@app.route('/expensive', methods=['GET','POST'])
+def expensive_payment_gateway():
+    if request.method == 'GET':
+         return "Your payment Has been processed through ExpensivePaymentGateway"
+    return render_template ('expensive.html' )
+
+@app.route('/premium', methods=['GET','POST'])    
+def premium_payment_gateway():
+    if request.method == 'GET':
+         return "Your payment Has been processed through PremiumPaymentGateway"
+    return render_template ('premium.html' )
     
 
 

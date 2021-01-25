@@ -1,12 +1,7 @@
-<html>
+{% extends "base.html"%} {%block title%}mypay{%endblock%}{%block content%}
 
-<head>
-    <title>Form!!!</title>
-</head>
-
-<body>
-    <h1> Place for form</h1>
-
+<div class="container alert alert-dark">
+    <h1>Check out</h1>
     <form method="POST" action="{{ url_for('form') }}">
         {{ form.csrf_token }} {{ form.card_holder.label }} {{ form.card_holder }}
         <ul>
@@ -26,8 +21,9 @@
             <li style="color:red;">{{ error }}</li>
             {% endfor %}
         </ul>
-        {{ form.security_code.label }} {{ form.security_code}} {% for error in form.security_code.errors %}
+        {{ form.security_code.label }} {{ form.security_code}}
         <ul>
+            {% for error in form.security_code.errors %}
             <li style="color:red;">{{ error }}</li>
             {% endfor %}
         </ul>
@@ -37,8 +33,6 @@
             <li style="color:red;">{{ error }}</li>
             {% endfor %}
         </ul>
-        <input type="submit" value="Submit">
+        <input type="submit" value="Pay now" class="btn btn-info btn-lg ">
     </form>
-</body>
-
-</html>
+</div>{%endblock%}
